@@ -240,7 +240,7 @@ export class Rendering extends PixiHandler {
       failIfMajorPerformanceCaveat,
     };
 
-    if (!('glTextures' in renderer.texture)) {
+    if (!('_glTextures' in renderer.texture || '_gpuSources' in renderer.texture)) {
       return {
         ...defaults,
         // @ts-expect-error - newer pixi version
