@@ -133,3 +133,39 @@ Reference docs: https://pixijs.io/devtools.
   for our Pixi class-tagging plugin).
 - `config/vite.root.ts` (`DEV_IDE`) + `config/key-listener.ts` + `scripts/GlobalKeyListener.swift`
   — editor guessing and the (here-unneeded) global key listener.
+
+## Proposing "Open in editor" upstream (pixijs/devtools)
+
+If we want to contribute the feature back to the official repo, **most of the fork-specific work
+must be left out** — upstream keeps the `@pixi/devtools` name and its own branding.
+
+**Include (the feature itself):**
+- The Vite plugin — `packages/api/src/vite/index.ts`, its `./vite` subexport + build entry
+  (`packages/api/package.json` exports, `vite.config.ts`), the new deps (`@babel/parser`,
+  `@babel/traverse`, `magic-string`, `launch-editor`) and `launch-editor-guess.d.ts`.
+- Backend — `getNodeSource` (parent walk-up) and `hasTaggedClasses` in `scene/tree/tree.ts`.
+- Frontend — `useOpenInEditor` hook, `lib/editor.ts`, `lib/utils.ts` `isMac`, the "Open" context-menu
+  item + `external-link-icon.tsx` + shortcut hint (`node.tsx`, `context-menu-button.tsx`), and the
+  Ctrl/Cmd+Shift+E listener (`SceneTree.tsx`).
+- The example `Bunny` demo and a docs page under `packages/docs/`.
+
+**Exclude (Kahoot-fork-only):**
+- The rebrand to "Kahoot! PixiJS DevTools" (`manifest.json`, `manifest.dev.json`, `devtools.ts`).
+- The `@mobitroll/pixi-devtools` rename — keep `@pixi/devtools` everywhere.
+- `publishConfig.access: restricted`, the mobitroll repository/homepage/bugs, the `0.1.0` version
+  bump, the fork-specific README, and this CLAUDE.md.
+- The kahoot-specific `EDITOR_SHORTCUT_NAME` env var — drop it or rename to something neutral and
+  discuss the default-editor convention with the maintainers.
+
+**Mechanics:**
+1. `git remote add upstream https://github.com/pixijs/devtools.git && git fetch upstream`
+2. `git checkout -b feat/open-in-editor upstream/main`
+3. Cherry-pick the **`feat:`** commits only (not the `chore:` rebrand/rename, not the fork docs),
+   then reverse the rename within them (`@mobitroll/pixi-devtools` → `@pixi/devtools`) and strip any
+   Kahoot branding/paths.
+4. Match upstream conventions (lint/prettier, add docs); **don't bump versions** — releases are run
+   by maintainers via `scripts/release.mts`.
+5. Open the PR against `pixijs/devtools` with a short demo (GIF) and note it's a dev-only, opt-in
+   plugin. Likely discussion points: shipping the tagging plugin inside `@pixi/devtools` vs a
+   separate package; the `__devtoolSource` static-field approach; and the
+   `window.__PIXI_DEVTOOLS_EDITOR__` global + default-editor naming.
