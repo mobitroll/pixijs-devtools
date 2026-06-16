@@ -2,7 +2,7 @@ import { DevtoolMessage } from '@devtool/frontend/types';
 import { convertPostMessage } from '../messageUtils';
 
 chrome.devtools.panels.create(
-  import.meta.env.DEV ? 'Dev: PixiJS DevTools' : 'PixiJS DevTools',
+  import.meta.env.DEV ? 'DEV: Kahoot! PixiJS DevTools' : 'Kahoot! PixiJS DevTools',
   'pixi-icon-active-128.png',
   'devtools/panel/panel.html',
   (panel) => {
