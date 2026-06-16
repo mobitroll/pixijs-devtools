@@ -64,20 +64,25 @@ export function pixiDevtoolsSource(options: PixiDevtoolsSourceOptions = {}): Plu
       const s = new MagicString(code);
       let tagged = false;
 
+      // Inject a static field at the top of the class body, e.g. `static __devtoolSource = "..."`.
+      // A static member lives on the constructor (which is what the backend reads) and needs no
+      // name binding, so this handles every class shape uniformly: declarations, named/anonymous
+      // default exports, `const X = class {}` expressions, and classes returned from mixins.
+      const tagClass = (path: { node: import('@babel/types').Class }) => {
+        const node = path.node;
+        const bodyStart = node.body.start;
+        const loc = node.loc?.start;
+        if (bodyStart == null || !loc) return;
+
+        // Babel columns are 0-based; editors expect 1-based.
+        const source = `${file}:${loc.line}:${loc.column + 1}`;
+        s.appendRight(bodyStart + 1, ` static ${property} = ${JSON.stringify(source)};`);
+        tagged = true;
+      };
+
       traverse(ast, {
-        ClassDeclaration: (path) => {
-          const node = path.node;
-          // Anonymous classes (e.g. `export default class extends Container {}`) have no name to tag.
-          if (!node.id || node.end == null) return;
-
-          const loc = node.id.loc?.start;
-          if (!loc) return;
-
-          // Babel columns are 0-based; editors expect 1-based.
-          const source = `${file}:${loc.line}:${loc.column + 1}`;
-          s.appendLeft(node.end, `\n${node.id.name}.${property} = ${JSON.stringify(source)};`);
-          tagged = true;
-        },
+        ClassDeclaration: tagClass,
+        ClassExpression: tagClass,
       });
 
       if (!tagged) return null;
