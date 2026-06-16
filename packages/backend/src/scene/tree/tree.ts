@@ -78,18 +78,29 @@ export class Tree extends PixiHandler {
   }
 
   /**
-   * Returns the source location ("file:line:col") of the node's class definition, or null.
+   * Returns the source location ("file:line:col") of a node's class definition, or null.
    * The location is injected at build time by the @pixi/devtools Vite plugin, which tags each
    * class with a `__devtoolSource` property. Used by the "Open in editor" feature.
+   *
+   * If the node's own class isn't one we control, we walk up the scene graph to the nearest
+   * ancestor whose class is tagged (e.g. a built-in Sprite child resolves to its custom parent),
+   * stopping at the stage. Nearest match wins; instance source takes precedence over class source.
    */
   public getNodeSource(nodeId: string): string | null {
-    const node = this._idMap.get(nodeId);
-    if (!node) return null;
+    const stage = this._devtool.stage;
+    let container = this._idMap.get(nodeId) ?? null;
 
-    const instanceSource = (node as { __devtoolSource?: string }).__devtoolSource;
-    const classSource = (node.constructor as { __devtoolSource?: string } | undefined)?.__devtoolSource;
+    while (container) {
+      const instanceSource = (container as { __devtoolSource?: string }).__devtoolSource;
+      const classSource = (container.constructor as { __devtoolSource?: string } | undefined)?.__devtoolSource;
+      const source = instanceSource ?? classSource;
+      if (source) return source;
 
-    return instanceSource ?? classSource ?? null;
+      if (container === stage) break;
+      container = container.parent ?? null;
+    }
+
+    return null;
   }
 
   private clear() {
