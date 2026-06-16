@@ -1,4 +1,4 @@
-import type { ButtonMetadata } from '@mobitroll/pixi-devtools';
+import type { ButtonMetadata } from '@kahoot/pixi-devtools';
 import { useEffect, useState } from 'react';
 import { Tree } from 'react-arborist';
 import { FaWandMagicSparkles as PickIcon } from 'react-icons/fa6';

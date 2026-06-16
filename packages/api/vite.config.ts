@@ -6,7 +6,7 @@ export default defineConfig({
     lib: {
       entry: {
         index: resolve(__dirname, 'src/index.ts'),
-        // The Vite plugin for the "Open in editor" feature, exposed as `@mobitroll/pixi-devtools/vite`.
+        // The Vite plugin for the "Open in editor" feature, exposed as `@kahoot/pixi-devtools/vite`.
         vite: resolve(__dirname, 'src/vite/index.ts'),
       },
       formats: ['es', 'cjs'],

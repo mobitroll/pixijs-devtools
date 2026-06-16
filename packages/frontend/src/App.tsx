@@ -170,8 +170,8 @@ const App: React.FC<AppProps> = ({ bridge, chromeProxy }) => {
   // stage: myStage,
 };`;
 
-  const npmInstallString = `npm install @mobitroll/pixi-devtools`;
-  const npmString = `import { initDevtools } from '@mobitroll/pixi-devtools';
+  const npmInstallString = `npm install @kahoot/pixi-devtools`;
+  const npmString = `import { initDevtools } from '@kahoot/pixi-devtools';
 
 initDevtools({
   app,
@@ -220,7 +220,7 @@ initDevtools({
               </div>
               <div className="p-4 pt-0">
                 <p>
-                  2. Using the <code>@mobitroll/pixi-devtools</code> package, which will handle the pixi import for you
+                  2. Using the <code>@kahoot/pixi-devtools</code> package, which will handle the pixi import for you
                 </p>
                 <div className="relative p-4 pb-0">
                   <SyntaxHighlighter language="" style={dracula}>

@@ -1,4 +1,4 @@
-import type { Properties, PropertiesEntry, PropertiesExtension } from '@mobitroll/pixi-devtools';
+import type { Properties, PropertiesEntry, PropertiesExtension } from '@kahoot/pixi-devtools';
 import type { Container } from 'pixi.js';
 import {
   arrayToBounds,

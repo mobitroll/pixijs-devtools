@@ -1,4 +1,4 @@
-import type { Properties } from '@mobitroll/pixi-devtools';
+import type { Properties } from '@kahoot/pixi-devtools';
 
 export const textProps = [
   { prop: 'text', entry: { section: 'Text', type: 'text' } },

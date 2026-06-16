@@ -1,4 +1,4 @@
-import type { ExtensionType } from '@mobitroll/pixi-devtools';
+import type { ExtensionType } from '@kahoot/pixi-devtools';
 
 /**
  * The metadata for an extension.

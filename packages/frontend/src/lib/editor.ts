@@ -6,7 +6,7 @@
  * custom scheme the OS hands off to the configured editor.
  *
  * `editor` is a launch-editor command (e.g. 'code', 'code-insiders', 'webstorm', 'cursor'), as
- * resolved and injected into the page by the @mobitroll/pixi-devtools/vite plugin. Falls back to VSCode.
+ * resolved and injected into the page by the @kahoot/pixi-devtools/vite plugin. Falls back to VSCode.
  */
 export function buildEditorUrl(editor: string | undefined, source: string): string | undefined {
   if (!source) return undefined;

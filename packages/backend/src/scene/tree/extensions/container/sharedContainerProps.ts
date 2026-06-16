@@ -1,4 +1,4 @@
-import type { Properties } from '@mobitroll/pixi-devtools';
+import type { Properties } from '@kahoot/pixi-devtools';
 
 export const sharedContainerProps = [
   { prop: 'type', entry: { section: 'Info', options: { disabled: true }, type: 'text' } }, // not editable

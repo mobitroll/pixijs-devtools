@@ -1,4 +1,4 @@
-import type { Properties } from '@mobitroll/pixi-devtools';
+import type { Properties } from '@kahoot/pixi-devtools';
 import { sharedTilingSpriteProps } from './sharedTilingSpriteProps';
 
 export const v7TilingSpriteProps = [

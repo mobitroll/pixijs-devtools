@@ -1,4 +1,4 @@
-import type { PropertiesEntry } from '@mobitroll/pixi-devtools';
+import type { PropertiesEntry } from '@kahoot/pixi-devtools';
 import type { AnimatedSprite } from 'pixi.js';
 import { PixiDevtools } from '../../../../pixi';
 import { isAnimatedSprite } from '../../../../utils/getPixiType';

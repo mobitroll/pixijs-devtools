@@ -1,5 +1,5 @@
 import type { DevtoolState } from '@devtool/frontend/types';
-import type { StatsExtension } from '@mobitroll/pixi-devtools';
+import type { StatsExtension } from '@kahoot/pixi-devtools';
 import type { Container } from 'pixi.js';
 import { getPixiType } from '../../utils/getPixiType';
 

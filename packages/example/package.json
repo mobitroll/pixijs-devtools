@@ -10,6 +10,6 @@
   },
   "dependencies": {
     "pixi.js": "^8.14.3",
-    "@mobitroll/pixi-devtools": "*"
+    "@kahoot/pixi-devtools": "*"
   }
 }

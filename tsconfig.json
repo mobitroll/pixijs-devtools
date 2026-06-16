@@ -24,7 +24,7 @@
     "paths": {
       "@devtool/frontend/*": ["packages/frontend/src/*"],
       "@devtool/backend/*": ["packages/backend/src/*"],
-      "@mobitroll/pixi-devtools": ["packages/api/src/index.ts"]
+      "@kahoot/pixi-devtools": ["packages/api/src/index.ts"]
     }
   },
   "ts-node": {
