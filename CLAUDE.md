@@ -10,12 +10,13 @@ This is **Kahoot's fork** of the official [PixiJS DevTools](https://github.com/p
 
 ### Why we forked: the "Open in editor" feature
 
-We are adding a feature: **from the DevTools scene tree, open the source file of the selected
-node's class directly in the user's editor (VSCode/Cursor/etc.)** — analogous to the
-"Open in editor" shortcut in `kahoot-frontend`
-(reference impl: `kahoot-frontend/src/common/utils/dev-automation/`).
+We added a feature: **from the DevTools scene tree, open the source file of the selected node's
+class directly in the editor (VSCode/Cursor/WebStorm/…)** — analogous to the "Open in editor"
+shortcut in `kahoot-frontend` (reference impl: `kahoot-frontend/src/common/utils/dev-automation/`).
 
-Triggers: a **context-menu item** on the tree node **and** a **keyboard shortcut** within the panel.
+Triggers: an **"Open" context-menu item** on the tree node **and** the **Ctrl/Cmd+Shift+E**
+keyboard shortcut within the panel. See "How 'Open in editor' works" below. The feature lives on the
+`open-in-editor` branch.
 
 ## Architecture (npm-workspaces monorepo, `packages/*`)
 
@@ -53,31 +54,45 @@ The panel cannot touch Pixi objects directly. It runs code **in the inspected pa
 - **Tree extension API:** `packages/api/src/extensions/tree.ts` (`onSelected`, `onContextButtonPress`,
   `updateNodeMetadata`, `contextMenu` metadata, etc.).
 
-## Planned design for "Open in editor"
+## How "Open in editor" works (as built)
 
-Decisions (the debugged app is **ours, built with Vite, run in dev with sourcemaps**):
+The debugged app is **ours, built with Vite, run in dev with sourcemaps**. End-to-end flow:
 
-1. **Source resolution → Vite build plugin (chosen approach).**
-   Mirror `kahoot-frontend/config/plugins/jsx-dev-source.ts` (Babel + `magic-string`).
-   A plugin (shipped as e.g. `@pixi/devtools/vite`, **dev-only**) tags each class declaration in
-   `/src/` with its definition location, e.g. injects `MyClass.__devtoolSource = '/abs/path:line:col'`.
-   At runtime the backend reads `selectedNode.constructor.__devtoolSource` — exact, no name ambiguity.
-   (Rejected: runtime stack capture = fragile; source-tree grep by class name = ambiguous.)
+1. **Build-time source tagging — `@pixi/devtools/vite` plugin** (`packages/api/src/vite/index.ts`,
+   exported as the `pixiDevtoolsSource()` subexport). Dev-only (`apply: 'serve'`, `enforce: 'pre'`
+   so positions map to the original source). Using Babel + `magic-string` (modelled on
+   `kahoot-frontend/config/plugins/jsx-dev-source.ts`), it injects a **static field into every class
+   body** — `static __devtoolSource = "/abs/path:line:col"` — covering all class shapes (named,
+   anonymous default, `const X = class {}`, mixin-returned). Unparseable files are warned and
+   skipped so it can never break a build. The app enables it by adding `pixiDevtoolsSource()` to its
+   Vite dev config (see `packages/example/vite.config.ts`; in kahoot-frontend `config/vite.root.ts`).
 
-2. **Editor is configurable**, simplified version of kahoot's `DEV_IDE`
-   (`kahoot-frontend/config/vite.root.ts` using `launch-editor/guess` + `EDITOR_SHORTCUT_NAME`).
-   The plugin injects the default editor; the panel lets the user override it (persist via the
-   frontend `localStorage` helper). Build the URL like kahoot's `editorUrlTarget`:
-   `vscode://file/<path>:<line>:<col>`, `cursor://file/...`, `webstorm://open?file=...`
-   (WebStorm cannot target a line).
+2. **Editor resolution.** The same plugin resolves which editor to open and injects it into the page
+   as `window.__PIXI_DEVTOOLS_EDITOR__` (via `transformIndexHtml`). Precedence: `options.editor` →
+   `process.env.EDITOR_SHORTCUT_NAME` (same var as kahoot) → `launch-editor/guess()`. Mirrors
+   kahoot's `DEV_IDE`, so devs who already set that env var get it for free.
 
-3. **Triggers:** context-menu item in `node.tsx` **and** a panel keyboard shortcut
-   (a `keydown` listener in the React panel — the panel has focus, so **no global OS-level key
-   listener / Swift binary is needed**, unlike kahoot-frontend).
+3. **Backend resolution** (`packages/backend/src/scene/tree/tree.ts`):
+   - `getNodeSource(id)` returns the node's `constructor.__devtoolSource`, **walking up the parent
+     chain** (stopping at the stage) to the nearest tagged ancestor — so a built-in `Sprite` child
+     resolves to its custom parent class.
+   - `hasTaggedClasses()` — whether any node on the page is tagged (used to distinguish "plugin not
+     enabled" from "this node is just a built-in class").
 
-4. **Flow:** backend exposes something like `scene.tree.getSelectedSource()` returning the node's
-   `__devtoolSource`; the frontend builds the editor URL with the configured editor, then runs
-   `bridge('window.open(<url>)')` so the page (not the extension origin) opens the editor.
+4. **Panel** (`packages/frontend/src/pages/scene/graph/useOpenInEditor.ts`, the shared hook):
+   gets the source via `bridge`, reads the injected editor, builds the deep-link with
+   `buildEditorUrl` (`lib/editor.ts`: `code → vscode://`, `code-insiders → vscode-insiders://`,
+   `webstorm → webstorm://open?file=` (no line), `cursor → cursor://`, default VSCode), then opens
+   it with `window.open` **from the panel** (the click/keypress provides the user gesture Chrome
+   needs to launch an external protocol; eval'd page code has no gesture and is blocked silently).
+   When no source is found it logs guidance **to the inspected page's console** (via `bridge`):
+   `console.error` (plugin missing) vs `console.warn` (built-in node).
+
+5. **Triggers:** the **"Open"** item in the node context menu (`node.tsx`, with an external-link
+   icon and an OS-aware shortcut hint via `lib/utils.ts` `isMac`) and the **Ctrl/Cmd+Shift+E**
+   shortcut (`SceneTree.tsx`, acts on the store's `selectedNode`). Both call the same hook. No global
+   OS-level key listener / Swift binary is needed (unlike kahoot-frontend), because the panel has
+   focus when the tree is in use.
 
 ## Commands
 
@@ -91,8 +106,13 @@ npm run lint  / lint:fix   # ESLint over .ts/.tsx
 npm run types              # tsc --noEmit typecheck
 ```
 
-Loading the unpacked extension: build, then load `packages/devtool-chrome/dist/chrome` in
-`chrome://extensions` (Developer mode). Reference docs: https://pixijs.io/devtools.
+Loading the unpacked extension in `chrome://extensions` (Developer mode):
+- **Dev:** run `npm run start:chrome`, then load `packages/devtool-chrome/dist/chrome-dev` (the
+  watcher rebuilds it with HMR; reload the extension with ↻ after backend/manifest/devtools-page
+  changes — frontend panel changes hot-reload on their own).
+- **Prod:** `npm run build`, then load `packages/devtool-chrome/dist/chrome`.
+
+Reference docs: https://pixijs.io/devtools.
 
 ## Conventions
 
