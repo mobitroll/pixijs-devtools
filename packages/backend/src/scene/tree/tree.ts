@@ -1,5 +1,5 @@
 import type { SceneGraphEntry } from '@devtool/frontend/types';
-import type { PixiNodeType, TreeExtension } from '@pixi/devtools';
+import type { PixiNodeType, TreeExtension } from '@mobitroll/pixi-devtools';
 import type { Container } from 'pixi.js';
 import { extensions } from '../../extensions/Extensions';
 import { getExtensionsProp } from '../../extensions/getExtension';
@@ -75,6 +75,46 @@ export class Tree extends PixiHandler {
 
   public getSelectedNode() {
     return this.selectedNode ? (this._sceneGraph.get(this.selectedNode)!.id as string) : null;
+  }
+
+  /**
+   * Returns the source location ("file:line:col") of a node's class definition, or null.
+   * The location is injected at build time by the @mobitroll/pixi-devtools Vite plugin, which tags each
+   * class with a `__devtoolSource` property. Used by the "Open in editor" feature.
+   *
+   * If the node's own class isn't one we control, we walk up the scene graph to the nearest
+   * ancestor whose class is tagged (e.g. a built-in Sprite child resolves to its custom parent),
+   * stopping at the stage. Nearest match wins; instance source takes precedence over class source.
+   */
+  public getNodeSource(nodeId: string): string | null {
+    const stage = this._devtool.stage;
+    let container = this._idMap.get(nodeId) ?? null;
+
+    while (container) {
+      const instanceSource = (container as { __devtoolSource?: string }).__devtoolSource;
+      const classSource = (container.constructor as { __devtoolSource?: string } | undefined)?.__devtoolSource;
+      const source = instanceSource ?? classSource;
+      if (source) return source;
+
+      if (container === stage) break;
+      container = container.parent ?? null;
+    }
+
+    return null;
+  }
+
+  /**
+   * Whether any node currently in the scene graph has a class tagged with `__devtoolSource`.
+   * Used by the panel to tell "the source-tagging plugin isn't enabled" apart from "this node
+   * just happens to be a built-in class" when "Open in editor" finds nothing.
+   */
+  public hasTaggedClasses(): boolean {
+    for (const node of this._idMap.values()) {
+      if ((node.constructor as { __devtoolSource?: string } | undefined)?.__devtoolSource) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private clear() {

@@ -1,16 +1,16 @@
 {
-  "name": "@pixi/devtools",
+  "name": "@mobitroll/pixi-devtools",
   "publishConfig": {
-    "access": "public"
+    "access": "restricted"
   },
-  "homepage": "https://pixijs.io/devtools/",
-  "bugs": "https://github.com/pixijs/devtools/issues",
+  "homepage": "https://github.com/mobitroll/pixijs-devtools#readme",
+  "bugs": "https://github.com/mobitroll/pixijs-devtools/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/pixijs/devtools.git"
+    "url": "https://github.com/mobitroll/pixijs-devtools.git"
   },
   "license": "MIT",
-  "version": "2.3.1",
+  "version": "0.1.0",
   "type": "module",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
@@ -20,6 +20,11 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
+    },
+    "./vite": {
+      "types": "./dist/vite/index.d.ts",
+      "import": "./dist/vite.js",
+      "require": "./dist/vite.cjs"
     }
   },
   "files": [
@@ -29,12 +34,26 @@
   "scripts": {
     "build": "vite build && tsc",
     "watch": "vite build --watch",
-    "start": "npm run watch"
+    "start": "npm run watch",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@babel/parser": "^7.24.0",
+    "@babel/traverse": "^7.24.0",
+    "launch-editor": "^2.6.0",
+    "magic-string": "^0.30.0"
   },
   "devDependencies": {
+    "@types/babel__traverse": "^7.20.0",
     "pixi.js": "^8.14.3"
   },
   "peerDependencies": {
-    "pixi.js": "^7 || ^8"
+    "pixi.js": "^7 || ^8",
+    "vite": "^4 || ^5 || ^6"
+  },
+  "peerDependenciesMeta": {
+    "vite": {
+      "optional": true
+    }
   }
 }

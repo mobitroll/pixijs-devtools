@@ -11,6 +11,6 @@
   "dependencies": {
     "@devtool/frontend": "*",
     "@devtool/backend": "*",
-    "@pixi/devtools": "*"
+    "@mobitroll/pixi-devtools": "*"
   }
 }

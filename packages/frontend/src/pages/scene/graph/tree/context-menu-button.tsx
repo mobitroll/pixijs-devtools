@@ -1,4 +1,4 @@
-import type { ContextMenuButtonMetadata } from '@pixi/devtools';
+import type { ContextMenuButtonMetadata } from '@mobitroll/pixi-devtools';
 import { useCallback } from 'react';
 import type { NodeApi } from 'react-arborist';
 import { ContextMenuItem, ContextMenuSeparator } from '../../../../components/ui/context-menu';
@@ -8,12 +8,22 @@ import type { SceneGraphEntry } from '../../../../types';
 export const NodeContextMenuItem: React.FC<{
   title: string;
   onClick: React.MouseEventHandler<HTMLDivElement>;
+  icon?: React.ReactNode;
+  shortcut?: string;
   isLast?: boolean;
-}> = ({ title, onClick, isLast }) => {
+}> = ({ title, onClick, icon, shortcut, isLast }) => {
   isLast = isLast ?? false;
   return (
     <>
-      <ContextMenuItem onClick={onClick}>{title}</ContextMenuItem>
+      <ContextMenuItem onClick={onClick}>
+        {title}
+        {(shortcut || icon) && (
+          <span className="ml-auto flex items-center gap-2 pl-3">
+            {shortcut && <span className="text-muted-foreground text-xs tracking-widest">{shortcut}</span>}
+            {icon}
+          </span>
+        )}
+      </ContextMenuItem>
       {!isLast && <ContextMenuSeparator />}
     </>
   );

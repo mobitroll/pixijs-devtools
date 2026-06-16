@@ -1,4 +1,4 @@
-import type { Properties } from '@pixi/devtools';
+import type { Properties } from '@mobitroll/pixi-devtools';
 
 export const sharedNineSliceProps = [
   { prop: 'leftWidth', entry: { section: 'NineSlice Sprite', type: 'number' } },

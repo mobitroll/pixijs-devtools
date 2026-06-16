@@ -1,4 +1,4 @@
-import type { ExtensionType } from '@pixi/devtools';
+import type { ExtensionType } from '@mobitroll/pixi-devtools';
 
 /**
  * The metadata for an extension.

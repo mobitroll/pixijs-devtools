@@ -1,4 +1,4 @@
-import type { Properties } from '@pixi/devtools';
+import type { Properties } from '@mobitroll/pixi-devtools';
 import { sharedContainerProps } from './sharedContainerProps';
 
 export const v7BlendModeMap = {

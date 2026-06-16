@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "PixiJS DevTools",
-  "description": "DevTools for PixiJS",
+  "name": "Kahoot! PixiJS DevTools",
+  "description": "Kahoot's fork of the PixiJS DevTools, with support for opening a node's source in your editor.",
   "action": {
     "default_icon": {
       "16": "pixi-icon-inactive-16.png",

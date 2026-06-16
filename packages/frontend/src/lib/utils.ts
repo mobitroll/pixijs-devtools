@@ -7,6 +7,11 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+/** Whether the panel is running on macOS, used to display the right keyboard-shortcut glyphs. */
+export const isMac =
+  typeof navigator !== 'undefined' &&
+  (/Mac|iPhone|iPad|iPod/.test(navigator.platform) || /Mac/.test(navigator.userAgent));
+
 export type ZustSet<T> = (
   partial: T | Partial<T> | ((state: T) => T | Partial<T>),
   replace?: boolean | undefined,
