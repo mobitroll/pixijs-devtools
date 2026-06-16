@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useDevtoolStore } from '../../../App';
-import { buildEditorUrl, DEFAULT_EDITOR } from '../../../lib/editor';
+import { buildEditorUrl } from '../../../lib/editor';
 
 /**
  * Returns a function that opens a scene node's source file in the configured editor.
@@ -38,7 +38,9 @@ export function useOpenInEditor() {
         return;
       }
 
-      const url = buildEditorUrl(DEFAULT_EDITOR, source);
+      // The editor is injected into the page by the @pixi/devtools/vite plugin; default to VSCode.
+      const editor = await bridge<string | null>(`window.__PIXI_DEVTOOLS_EDITOR__ ?? null`);
+      const url = buildEditorUrl(editor ?? undefined, source);
       if (!url) {
         logToPage('warn', `[PixiJS DevTools] Could not build an editor URL for "${source}".`);
         return;

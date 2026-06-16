@@ -1,11 +1,14 @@
 import { parse } from '@babel/parser';
 import type { ParserPlugin } from '@babel/parser';
 import _traverse from '@babel/traverse';
+// Explicit .js: launch-editor has no `exports` map, so Node ESM needs the extension at runtime.
+import _guess from 'launch-editor/guess.js';
 import MagicString from 'magic-string';
 import type { Plugin } from 'vite';
 
-// @babel/traverse is CJS; its real function lives on `.default` under ESM interop.
+// These deps are CJS; their real function lives on `.default` under ESM interop.
 const traverse = ((_traverse as unknown as { default?: typeof _traverse }).default ?? _traverse) as typeof _traverse;
+const guess = ((_guess as unknown as { default?: typeof _guess }).default ?? _guess) as typeof _guess;
 
 export interface PixiDevtoolsSourceOptions {
   /**
@@ -14,6 +17,23 @@ export interface PixiDevtoolsSourceOptions {
    * @default '__devtoolSource'
    */
   property?: string;
+  /**
+   * The editor to open files in (a launch-editor command, e.g. 'code', 'code-insiders',
+   * 'webstorm', 'cursor'). Defaults to `process.env.EDITOR_SHORTCUT_NAME`, then to the running
+   * editor detected by `launch-editor/guess`, then to VSCode in the panel.
+   */
+  editor?: string;
+}
+
+/** Resolve the editor command, mirroring kahoot-frontend's DEV_IDE (env override, else guess). */
+function detectEditor(explicit?: string): string | undefined {
+  if (explicit) return explicit;
+  if (process.env.EDITOR_SHORTCUT_NAME) return process.env.EDITOR_SHORTCUT_NAME;
+  try {
+    return guess()?.[0] ?? undefined;
+  } catch {
+    return undefined;
+  }
 }
 
 /**
@@ -34,12 +54,25 @@ export interface PixiDevtoolsSourceOptions {
  */
 export function pixiDevtoolsSource(options: PixiDevtoolsSourceOptions = {}): Plugin {
   const property = options.property ?? '__devtoolSource';
+  let editor: string | undefined | null = null; // null = not resolved yet (resolve lazily, once)
 
   return {
     name: 'pixi-devtools-source',
     apply: 'serve',
     // Run before Vite's esbuild strips TS/JSX, so line/column map to the original source.
     enforce: 'pre',
+    // Expose the chosen editor to the page so the devtools panel can build the right deep-link.
+    transformIndexHtml() {
+      if (editor === null) editor = detectEditor(options.editor);
+      if (!editor) return;
+      return [
+        {
+          tag: 'script',
+          injectTo: 'head-prepend',
+          children: `window.__PIXI_DEVTOOLS_EDITOR__ = ${JSON.stringify(editor)};`,
+        },
+      ];
+    },
     transform(code, id) {
       const file = id.split('?')[0];
 

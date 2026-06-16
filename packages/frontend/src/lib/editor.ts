@@ -4,36 +4,21 @@
  * Mirrors kahoot-frontend's `editorUrlTarget` (open-in-editor.ts): given a source location
  * (a "file:line:col" string produced by the build-time source tagging) it returns a URL whose
  * custom scheme the OS hands off to the configured editor.
+ *
+ * `editor` is a launch-editor command (e.g. 'code', 'code-insiders', 'webstorm', 'cursor'), as
+ * resolved and injected into the page by the @pixi/devtools/vite plugin. Falls back to VSCode.
  */
-export type EditorName = 'vscode' | 'vscode-insiders' | 'cursor' | 'webstorm';
-
-// TODO: make this user-configurable from the panel (persisted in localStorage), mirroring
-// kahoot-frontend's DEV_IDE. Defaulting to VSCode for now.
-export const DEFAULT_EDITOR: EditorName = 'vscode';
-
-/**
- * Build a deep-link URL that opens `source` in `editor`.
- * @param source A "file:line:col" string (line/col optional). Path must be absolute.
- * @returns The URL, or undefined if `source` is empty or the editor is unknown.
- */
-export function buildEditorUrl(editor: EditorName, source: string): string | undefined {
+export function buildEditorUrl(editor: string | undefined, source: string): string | undefined {
   if (!source) return undefined;
 
-  // WebStorm cannot jump to a specific line via URL: https://youtrack.jetbrains.com/issue/TBX-3478
-  if (editor === 'webstorm') {
-    const fileName = source.split(':')[0];
-    return `webstorm://open?file=${fileName}`;
-  }
+  const ide = (editor || 'code').toLowerCase();
+  const fileName = source.split(':')[0];
 
-  // vscode / cursor accept `file/<path>:<line>:<col>` directly.
-  switch (editor) {
-    case 'vscode':
-      return `vscode://file/${source}`;
-    case 'vscode-insiders':
-      return `vscode-insiders://file/${source}`;
-    case 'cursor':
-      return `cursor://file/${source}`;
-    default:
-      return undefined;
-  }
+  // WebStorm cannot jump to a specific line via URL: https://youtrack.jetbrains.com/issue/TBX-3478
+  if (ide.includes('webstorm')) return `webstorm://open?file=${fileName}`;
+  if (ide.includes('cursor')) return `cursor://file/${source}`;
+  if (ide.includes('insider')) return `vscode-insiders://file/${source}`;
+
+  // Default to VSCode (covers 'code' and any unrecognized editor).
+  return `vscode://file/${source}`;
 }
