@@ -1,6 +1,6 @@
 import type { GlobalDevtoolState } from '@devtool/frontend/types';
 import { DevtoolMessage } from '@devtool/frontend/types';
-import type { Devtools } from '@pixi/devtools';
+import type { Devtools } from '@mobitroll/pixi-devtools';
 import type { Application, Container, Renderer, WebGLRenderer } from 'pixi.js';
 import { Textures } from './assets/gpuTextures/textures';
 import { extensions } from './extensions/Extensions';

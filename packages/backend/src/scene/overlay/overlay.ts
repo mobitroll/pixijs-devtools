@@ -1,7 +1,7 @@
 import type { Container } from 'pixi.js';
 import type { PixiDevtools } from '../../pixi';
 import { loop } from '../../utils/loop';
-import type { OverlayExtension } from '@pixi/devtools';
+import type { OverlayExtension } from '@mobitroll/pixi-devtools';
 import { getExtensionProp } from '../../extensions/getExtension';
 import { extensions } from '../../extensions/Extensions';
 import { PixiHandler } from '../../handler';

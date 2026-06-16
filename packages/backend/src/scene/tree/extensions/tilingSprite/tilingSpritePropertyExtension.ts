@@ -1,4 +1,4 @@
-import type { PropertiesEntry } from '@pixi/devtools';
+import type { PropertiesEntry } from '@mobitroll/pixi-devtools';
 import type { Container } from 'pixi.js';
 import { PixiDevtools } from '../../../../pixi';
 import { isTilingSprite } from '../../../../utils/getPixiType';

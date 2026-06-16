@@ -1,4 +1,4 @@
-import type { Properties } from '@pixi/devtools';
+import type { Properties } from '@mobitroll/pixi-devtools';
 
 export const sharedAnimatedSpriteProps = [
   { prop: 'animationSpeed', entry: { section: 'Animated Sprite', type: 'number' } },

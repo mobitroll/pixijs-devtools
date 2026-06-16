@@ -49,7 +49,7 @@ function detectEditor(explicit?: string): string | undefined {
  *
  * @example
  * // vite.config.ts
- * import { pixiDevtoolsSource } from '@pixi/devtools/vite';
+ * import { pixiDevtoolsSource } from '@mobitroll/pixi-devtools/vite';
  * export default defineConfig({ plugins: [pixiDevtoolsSource()] });
  */
 export function pixiDevtoolsSource(options: PixiDevtoolsSourceOptions = {}): Plugin {

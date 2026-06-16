@@ -1,5 +1,5 @@
 import type { SceneGraphEntry } from '@devtool/frontend/types';
-import type { PixiNodeType, TreeExtension } from '@pixi/devtools';
+import type { PixiNodeType, TreeExtension } from '@mobitroll/pixi-devtools';
 import type { Container } from 'pixi.js';
 import { extensions } from '../../extensions/Extensions';
 import { getExtensionsProp } from '../../extensions/getExtension';
@@ -79,7 +79,7 @@ export class Tree extends PixiHandler {
 
   /**
    * Returns the source location ("file:line:col") of a node's class definition, or null.
-   * The location is injected at build time by the @pixi/devtools Vite plugin, which tags each
+   * The location is injected at build time by the @mobitroll/pixi-devtools Vite plugin, which tags each
    * class with a `__devtoolSource` property. Used by the "Open in editor" feature.
    *
    * If the node's own class isn't one we control, we walk up the scene graph to the nearest

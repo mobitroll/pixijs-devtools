@@ -32,13 +32,13 @@ export function useOpenInEditor() {
           ? `[PixiJS DevTools] No source file found for "${label}" or any of its ancestors — ` +
             `"Open" only works for classes defined in your app's source.`
           : `[PixiJS DevTools] "Open in editor" needs source locations, but none were found on the page. ` +
-            `Enable the \`pixiDevtoolsSource()\` plugin from \`@pixi/devtools/vite\` in your app's Vite dev config.`;
+            `Enable the \`pixiDevtoolsSource()\` plugin from \`@mobitroll/pixi-devtools/vite\` in your app's Vite dev config.`;
 
         logToPage(hasTaggedClasses ? 'warn' : 'error', message);
         return;
       }
 
-      // The editor is injected into the page by the @pixi/devtools/vite plugin; default to VSCode.
+      // The editor is injected into the page by the @mobitroll/pixi-devtools/vite plugin; default to VSCode.
       const editor = await bridge<string | null>(`window.__PIXI_DEVTOOLS_EDITOR__ ?? null`);
       const url = buildEditorUrl(editor ?? undefined, source);
       if (!url) {

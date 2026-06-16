@@ -3,7 +3,7 @@
   "compilerOptions": {
     "paths": {
       "@devtool/frontend/*": ["packages/frontend/src/*"],
-      "@pixi/devtools": ["packages/api/src/index.ts"]
+      "@mobitroll/pixi-devtools": ["packages/api/src/index.ts"]
     }
   }
 }

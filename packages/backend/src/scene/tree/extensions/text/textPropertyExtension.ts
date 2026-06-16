@@ -1,4 +1,4 @@
-import type { PropertiesEntry } from '@pixi/devtools';
+import type { PropertiesEntry } from '@mobitroll/pixi-devtools';
 import type { Text } from 'pixi.js';
 import { PixiDevtools } from '../../../../pixi';
 import { isText } from '../../../../utils/getPixiType';

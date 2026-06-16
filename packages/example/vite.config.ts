@@ -1,4 +1,4 @@
-import { pixiDevtoolsSource } from '@pixi/devtools/vite';
+import { pixiDevtoolsSource } from '@mobitroll/pixi-devtools/vite';
 import { defineConfig } from 'vite';
 
 export default defineConfig({

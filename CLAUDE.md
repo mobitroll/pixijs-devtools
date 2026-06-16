@@ -22,7 +22,7 @@ keyboard shortcut within the panel. See "How 'Open in editor' works" below. The 
 
 | Package | Name | Role |
 |---|---|---|
-| `api` | `@pixi/devtools` | **Public** package the debugged app installs. Exposes `initDevtools()` and the extension API (tree/overlay/properties/stats). Published to npm. |
+| `api` | `@mobitroll/pixi-devtools` | **Public** package the debugged app installs. Exposes `initDevtools()` and the extension API (tree/overlay/properties/stats). Published to npm. |
 | `backend` | `@devtool/backend` | Runs **inside the inspected page**. Walks the Pixi `stage` and builds the scene graph. |
 | `frontend` | `@devtool/frontend` | The React DevTools **panel UI** (Zustand store, Radix UI, `react-arborist` tree, Tailwind). |
 | `devtool-chrome` | `@devtool/chrome` | Packages the **Chrome extension** (content / inject / background / devtools panel). |
@@ -58,7 +58,7 @@ The panel cannot touch Pixi objects directly. It runs code **in the inspected pa
 
 The debugged app is **ours, built with Vite, run in dev with sourcemaps**. End-to-end flow:
 
-1. **Build-time source tagging — `@pixi/devtools/vite` plugin** (`packages/api/src/vite/index.ts`,
+1. **Build-time source tagging — `@mobitroll/pixi-devtools/vite` plugin** (`packages/api/src/vite/index.ts`,
    exported as the `pixiDevtoolsSource()` subexport). Dev-only (`apply: 'serve'`, `enforce: 'pre'`
    so positions map to the original source). Using Babel + `magic-string` (modelled on
    `kahoot-frontend/config/plugins/jsx-dev-source.ts`), it injects a **static field into every class

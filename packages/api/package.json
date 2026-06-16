@@ -1,13 +1,13 @@
 {
-  "name": "@pixi/devtools",
+  "name": "@mobitroll/pixi-devtools",
   "publishConfig": {
-    "access": "public"
+    "access": "restricted"
   },
-  "homepage": "https://pixijs.io/devtools/",
-  "bugs": "https://github.com/pixijs/devtools/issues",
+  "homepage": "https://github.com/mobitroll/pixijs-devtools#readme",
+  "bugs": "https://github.com/mobitroll/pixijs-devtools/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/pixijs/devtools.git"
+    "url": "https://github.com/mobitroll/pixijs-devtools.git"
   },
   "license": "MIT",
   "version": "2.3.1",
@@ -34,7 +34,8 @@
   "scripts": {
     "build": "vite build && tsc",
     "watch": "vite build --watch",
-    "start": "npm run watch"
+    "start": "npm run watch",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "@babel/parser": "^7.24.0",

@@ -1,4 +1,4 @@
-import type { StatsExtension } from '@pixi/devtools';
+import type { StatsExtension } from '@mobitroll/pixi-devtools';
 import type { Container } from 'pixi.js';
 import { extensions } from '../../extensions/Extensions';
 import { getExtensionsProp } from '../../extensions/getExtension';

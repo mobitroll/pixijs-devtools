@@ -1,4 +1,4 @@
-import type { OverlayExtension } from '@pixi/devtools';
+import type { OverlayExtension } from '@mobitroll/pixi-devtools';
 import type { Container } from 'pixi.js';
 import { isParticleContainer } from '../../utils/getPixiType';
 
