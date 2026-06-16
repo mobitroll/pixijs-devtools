@@ -1,4 +1,4 @@
-import type { ContextMenuButtonMetadata } from '@mobitroll/pixi-devtools';
+import type { ContextMenuButtonMetadata } from '@kahoot/pixi-devtools';
 import { useCallback } from 'react';
 import type { NodeApi } from 'react-arborist';
 import { ContextMenuItem, ContextMenuSeparator } from '../../../../components/ui/context-menu';

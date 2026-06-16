@@ -2,7 +2,7 @@ import type { BridgeFn } from './lib/utils';
 import type { TextureState } from './pages/assets/assets';
 import type { PermanentRenderingStateKeys, RenderingState } from './pages/rendering/rendering';
 import type { SceneState } from './pages/scene/scene';
-import type { ButtonMetadata, PixiMetadata } from '@mobitroll/pixi-devtools';
+import type { ButtonMetadata, PixiMetadata } from '@kahoot/pixi-devtools';
 
 export enum DevtoolMessage {
   active = 'pixi-active',

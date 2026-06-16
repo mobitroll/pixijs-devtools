@@ -1,5 +1,5 @@
 {
-  "name": "@mobitroll/pixi-devtools",
+  "name": "@kahoot/pixi-devtools",
   "publishConfig": {
     "access": "restricted"
   },
@@ -7,7 +7,7 @@
   "bugs": "https://github.com/mobitroll/pixijs-devtools/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mobitroll/pixijs-devtools.git"
+    "url": "git+https://github.com/mobitroll/pixijs-devtools.git"
   },
   "license": "MIT",
   "version": "0.1.0",

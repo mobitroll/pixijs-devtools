@@ -22,12 +22,12 @@ Store as *unlisted* so it auto-updates.)
 ### Enabling "Open in editor" in your app
 
 The feature needs your app's classes tagged with their source location at dev time. This is done by
-a Vite plugin shipped in the companion package **`@mobitroll/pixi-devtools`** (published to our
+a Vite plugin shipped in the companion package **`@kahoot/pixi-devtools`** (published to our
 private registry):
 
 ```ts
 // vite.config.ts (or your dev config)
-import { pixiDevtoolsSource } from '@mobitroll/pixi-devtools/vite';
+import { pixiDevtoolsSource } from '@kahoot/pixi-devtools/vite';
 
 export default defineConfig({
   plugins: [pixiDevtoolsSource()], // dev-only; no effect on production builds

@@ -3,7 +3,7 @@
   "compilerOptions": {
     "paths": {
       "@devtool/backend/*": ["packages/backend/src/*"],
-      "@mobitroll/pixi-devtools": ["packages/api/src/index.ts"]
+      "@kahoot/pixi-devtools": ["packages/api/src/index.ts"]
     }
   }
 }

@@ -11,6 +11,6 @@
   "dependencies": {
     "@devtool/frontend": "*",
     "@devtool/backend": "*",
-    "@mobitroll/pixi-devtools": "*"
+    "@kahoot/pixi-devtools": "*"
   }
 }

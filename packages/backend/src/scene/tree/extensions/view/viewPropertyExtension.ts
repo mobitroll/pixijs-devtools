@@ -1,4 +1,4 @@
-import type { PropertiesEntry } from '@mobitroll/pixi-devtools';
+import type { PropertiesEntry } from '@kahoot/pixi-devtools';
 import type { AnimatedSprite } from 'pixi.js';
 import type { DefaultPropertyExtension } from '../container/containerPropertyExtension';
 import { arrayToPoint, pointToArray } from '../utils/convertProp';

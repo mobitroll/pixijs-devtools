@@ -5,7 +5,7 @@ import type { BridgeFn } from '../../../../lib/utils';
 import { cn } from '../../../../lib/utils';
 import type { SceneGraphEntry } from '../../../../types';
 import { Toggle } from '../../../../components/ui/toggle';
-import type { ButtonMetadata } from '@mobitroll/pixi-devtools';
+import type { ButtonMetadata } from '@kahoot/pixi-devtools';
 
 // TypeScript: Define types for props
 export type NodeButtonProps = {

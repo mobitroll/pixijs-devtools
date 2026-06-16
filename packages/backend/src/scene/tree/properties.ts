@@ -1,4 +1,4 @@
-import type { PropertiesExtension } from '@mobitroll/pixi-devtools';
+import type { PropertiesExtension } from '@kahoot/pixi-devtools';
 import { extensions } from '../../extensions/Extensions';
 import { PixiHandler } from '../../handler';
 
