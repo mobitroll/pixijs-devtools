@@ -3,10 +3,14 @@ import type { NodeRendererProps } from 'react-arborist';
 import { useDevtoolStore } from '../../../../App';
 import { ContextMenu, ContextMenuContent, ContextMenuTrigger } from '../../../../components/ui/context-menu';
 import { ExternalLinkIcon } from '../../../../components/ui/external-link-icon';
-import { buildEditorUrl, DEFAULT_EDITOR } from '../../../../lib/editor';
+import { isMac } from '../../../../lib/utils';
 import type { SceneGraphEntry } from '../../../../types';
+import { useOpenInEditor } from '../useOpenInEditor';
 import { CustomNodeContextMenuItem, NodeContextMenuItem } from './context-menu-button';
 import { NodeTrigger } from './node-trigger';
+
+// Keep in sync with the shortcut handler in SceneTree.tsx (Ctrl/Cmd + Shift + E).
+const OPEN_SHORTCUT = isMac ? '⇧⌘E' : 'Ctrl+Shift+E';
 
 export function Node({ node, style, dragHandle }: NodeRendererProps<SceneGraphEntry>) {
   const bridge = useDevtoolStore.use.bridge()!;
@@ -31,45 +35,8 @@ export function Node({ node, style, dragHandle }: NodeRendererProps<SceneGraphEn
     }, 200);
   }, [node]);
 
-  const onOpenInEditor = useCallback(async () => {
-    const logToPage = (level: 'warn' | 'error', message: string) =>
-      bridge(`console.${level}(${JSON.stringify(message)})`);
-
-    // Ask the backend (running in the page) for the source location tagged onto this node's class.
-    const source = await bridge<string | null>(
-      `window.__PIXI_DEVTOOLS_WRAPPER__?.scene.tree.getNodeSource(${JSON.stringify(node.id)})`,
-    );
-
-    if (!source) {
-      // Tell "the build plugin isn't enabled" apart from "this node is just a built-in class".
-      const hasTaggedClasses = await bridge<boolean>(
-        `!!window.__PIXI_DEVTOOLS_WRAPPER__?.scene.tree.hasTaggedClasses?.()`,
-      );
-
-      const message = hasTaggedClasses
-        ? `[PixiJS DevTools] No source file found for "${node.data.name}" or any of its ancestors — ` +
-          `"Open" only works for classes defined in your app's source.`
-        : `[PixiJS DevTools] "Open in editor" needs source locations, but none were found on the page. ` +
-          `Enable the \`pixiDevtoolsSource()\` plugin from \`@pixi/devtools/vite\` in your app's Vite dev config.`;
-
-      // Log in the INSPECTED PAGE's console (via the bridge), not the panel's, so the app
-      // developer actually sees it in their own devtools console.
-      logToPage(hasTaggedClasses ? 'warn' : 'error', message);
-      return;
-    }
-
-    const url = buildEditorUrl(DEFAULT_EDITOR, source);
-    if (!url) {
-      logToPage('warn', `[PixiJS DevTools] Could not build an editor URL for "${source}".`);
-      return;
-    }
-
-    // Open from the PANEL, not via the page bridge: launching an external protocol (vscode://)
-    // requires a user gesture, and the context-menu click only counts here in the panel. Code
-    // eval'd in the inspected page has no gesture, so Chrome blocks it silently on origins that
-    // haven't been granted permission.
-    window.open(url, '_blank');
-  }, [bridge, node]);
+  const openInEditor = useOpenInEditor();
+  const onOpenInEditor = useCallback(() => openInEditor(node.id, node.data.name), [openInEditor, node]);
 
   return (
     <ContextMenu>
@@ -81,6 +48,7 @@ export function Node({ node, style, dragHandle }: NodeRendererProps<SceneGraphEn
         <NodeContextMenuItem
           title="Open"
           onClick={onOpenInEditor}
+          shortcut={OPEN_SHORTCUT}
           icon={<ExternalLinkIcon className="h-3.5 w-3.5 opacity-70" />}
         />
         <NodeContextMenuItem title="Rename" onClick={onRename} />

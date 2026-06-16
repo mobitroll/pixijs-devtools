@@ -1,5 +1,5 @@
 import type { ButtonMetadata } from '@pixi/devtools';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Tree } from 'react-arborist';
 import { FaWandMagicSparkles as PickIcon } from 'react-icons/fa6';
 import { LuBoxSelect as OutlineToggleIcon } from 'react-icons/lu';
@@ -12,6 +12,7 @@ import { Cursor } from './tree/cursor';
 import { Node } from './tree/node';
 import { NodeButton } from './tree/node-button';
 import { useSimpleTree } from './tree/simple-tree';
+import { useOpenInEditor } from './useOpenInEditor';
 
 interface PanelProps {
   children: React.ReactNode;
@@ -123,6 +124,20 @@ export const SceneTree: React.FC = () => {
   const sceneGraphClone = JSON.parse(JSON.stringify(sceneGraph || {}));
   const [data, controller] = useSimpleTree(bridge, sceneGraphClone);
   const [currentSearch, setCurrentSearch] = useState('');
+  const openInEditor = useOpenInEditor();
+
+  // Keyboard shortcut: Ctrl/Cmd + Shift + E opens the selected node's source in the editor.
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (!(e.metaKey || e.ctrlKey) || !e.shiftKey || e.code !== 'KeyE') return;
+      const nodeId = useDevtoolStore.getState().selectedNode;
+      if (!nodeId) return;
+      e.preventDefault();
+      void openInEditor(nodeId);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [openInEditor]);
 
   const onSearch = (searchTerm: string) => {
     setCurrentSearch(searchTerm);

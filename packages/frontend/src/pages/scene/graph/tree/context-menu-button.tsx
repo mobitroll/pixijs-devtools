@@ -9,14 +9,20 @@ export const NodeContextMenuItem: React.FC<{
   title: string;
   onClick: React.MouseEventHandler<HTMLDivElement>;
   icon?: React.ReactNode;
+  shortcut?: string;
   isLast?: boolean;
-}> = ({ title, onClick, icon, isLast }) => {
+}> = ({ title, onClick, icon, shortcut, isLast }) => {
   isLast = isLast ?? false;
   return (
     <>
       <ContextMenuItem onClick={onClick}>
         {title}
-        {icon && <span className="ml-auto pl-3">{icon}</span>}
+        {(shortcut || icon) && (
+          <span className="ml-auto flex items-center gap-2 pl-3">
+            {shortcut && <span className="text-muted-foreground text-xs tracking-widest">{shortcut}</span>}
+            {icon}
+          </span>
+        )}
       </ContextMenuItem>
       {!isLast && <ContextMenuSeparator />}
     </>
