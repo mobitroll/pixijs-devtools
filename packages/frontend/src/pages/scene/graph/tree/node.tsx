@@ -32,21 +32,35 @@ export function Node({ node, style, dragHandle }: NodeRendererProps<SceneGraphEn
   }, [node]);
 
   const onOpenInEditor = useCallback(async () => {
+    const logToPage = (level: 'warn' | 'error', message: string) =>
+      bridge(`console.${level}(${JSON.stringify(message)})`);
+
     // Ask the backend (running in the page) for the source location tagged onto this node's class.
     const source = await bridge<string | null>(
       `window.__PIXI_DEVTOOLS_WRAPPER__?.scene.tree.getNodeSource(${JSON.stringify(node.id)})`,
     );
 
     if (!source) {
-      // No location available: a built-in Pixi class, or the source-tagging build plugin
-      // isn't enabled in the inspected app.
-      console.warn(`[devtools] No source location found for "${node.data.name}".`);
+      // Tell "the build plugin isn't enabled" apart from "this node is just a built-in class".
+      const hasTaggedClasses = await bridge<boolean>(
+        `!!window.__PIXI_DEVTOOLS_WRAPPER__?.scene.tree.hasTaggedClasses?.()`,
+      );
+
+      const message = hasTaggedClasses
+        ? `[PixiJS DevTools] No source file found for "${node.data.name}" or any of its ancestors — ` +
+          `"Open" only works for classes defined in your app's source.`
+        : `[PixiJS DevTools] "Open in editor" needs source locations, but none were found on the page. ` +
+          `Enable the \`pixiDevtoolsSource()\` plugin from \`@pixi/devtools/vite\` in your app's Vite dev config.`;
+
+      // Log in the INSPECTED PAGE's console (via the bridge), not the panel's, so the app
+      // developer actually sees it in their own devtools console.
+      logToPage(hasTaggedClasses ? 'warn' : 'error', message);
       return;
     }
 
     const url = buildEditorUrl(DEFAULT_EDITOR, source);
     if (!url) {
-      console.warn(`[devtools] Could not build an editor URL for "${source}".`);
+      logToPage('warn', `[PixiJS DevTools] Could not build an editor URL for "${source}".`);
       return;
     }
 

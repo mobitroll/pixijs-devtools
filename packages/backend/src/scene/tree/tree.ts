@@ -103,6 +103,20 @@ export class Tree extends PixiHandler {
     return null;
   }
 
+  /**
+   * Whether any node currently in the scene graph has a class tagged with `__devtoolSource`.
+   * Used by the panel to tell "the source-tagging plugin isn't enabled" apart from "this node
+   * just happens to be a built-in class" when "Open in editor" finds nothing.
+   */
+  public hasTaggedClasses(): boolean {
+    for (const node of this._idMap.values()) {
+      if ((node.constructor as { __devtoolSource?: string } | undefined)?.__devtoolSource) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   private clear() {
     this._sceneGraph.clear();
     this._idMap.clear();
