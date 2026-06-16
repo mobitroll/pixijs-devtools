@@ -1,19 +1,21 @@
-// vite.config.js
-import { resolve } from 'node:path';
+import { isAbsolute, resolve } from 'node:path';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
   build: {
     lib: {
-      // Could also be a dictionary or array of multiple entry points
-      entry: resolve(__dirname, 'src/index.ts'),
+      entry: {
+        index: resolve(__dirname, 'src/index.ts'),
+        // The Vite plugin for the "Open in editor" feature, exposed as `@pixi/devtools/vite`.
+        vite: resolve(__dirname, 'src/vite/index.ts'),
+      },
       formats: ['es', 'cjs'],
-      fileName: 'index',
+      fileName: (format, entryName) => `${entryName}.${format === 'es' ? 'js' : 'cjs'}`,
     },
     rollupOptions: {
-      // make sure to externalize deps that shouldn't be bundled
-      // into your library
-      external: ['pixi.js'],
+      // Externalize every bare/absolute import (pixi.js, vite, @babel/*, magic-string, node:*),
+      // bundling only this package's own relative sources.
+      external: (id) => !id.startsWith('.') && !isAbsolute(id),
     },
   },
 });

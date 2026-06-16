@@ -8,12 +8,16 @@ import type { SceneGraphEntry } from '../../../../types';
 export const NodeContextMenuItem: React.FC<{
   title: string;
   onClick: React.MouseEventHandler<HTMLDivElement>;
+  icon?: React.ReactNode;
   isLast?: boolean;
-}> = ({ title, onClick, isLast }) => {
+}> = ({ title, onClick, icon, isLast }) => {
   isLast = isLast ?? false;
   return (
     <>
-      <ContextMenuItem onClick={onClick}>{title}</ContextMenuItem>
+      <ContextMenuItem onClick={onClick}>
+        {title}
+        {icon && <span className="ml-auto pl-3">{icon}</span>}
+      </ContextMenuItem>
       {!isLast && <ContextMenuSeparator />}
     </>
   );

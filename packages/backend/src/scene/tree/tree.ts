@@ -77,6 +77,21 @@ export class Tree extends PixiHandler {
     return this.selectedNode ? (this._sceneGraph.get(this.selectedNode)!.id as string) : null;
   }
 
+  /**
+   * Returns the source location ("file:line:col") of the node's class definition, or null.
+   * The location is injected at build time by the @pixi/devtools Vite plugin, which tags each
+   * class with a `__devtoolSource` property. Used by the "Open in editor" feature.
+   */
+  public getNodeSource(nodeId: string): string | null {
+    const node = this._idMap.get(nodeId);
+    if (!node) return null;
+
+    const instanceSource = (node as { __devtoolSource?: string }).__devtoolSource;
+    const classSource = (node.constructor as { __devtoolSource?: string } | undefined)?.__devtoolSource;
+
+    return instanceSource ?? classSource ?? null;
+  }
+
   private clear() {
     this._sceneGraph.clear();
     this._idMap.clear();

@@ -1,5 +1,6 @@
 import * as PIXI from 'pixi.js';
-import { Application, Assets, Container, Sprite } from 'pixi.js';
+import { Application, Assets, Container } from 'pixi.js';
+import { Bunny } from './Bunny';
 
 (async () => {
   // Create a new application
@@ -26,7 +27,7 @@ import { Application, Assets, Container, Sprite } from 'pixi.js';
 
   // Create a 5x5 grid of bunnies in the container
   for (let i = 0; i < 25; i++) {
-    const bunny = new Sprite(texture);
+    const bunny = new Bunny(texture);
 
     bunny.x = (i % 5) * 40;
     bunny.y = Math.floor(i / 5) * 40;
@@ -60,7 +61,7 @@ import { Application, Assets, Container, Sprite } from 'pixi.js';
   addButton.style.left = '10px';
 
   addButton.onclick = () => {
-    const bunny = new Sprite(texture);
+    const bunny = new Bunny(texture);
     const i = container.children.length;
     bunny.x = (i % 5) * 40;
     bunny.y = Math.floor(i / 5) * 40;
