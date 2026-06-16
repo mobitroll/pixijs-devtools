@@ -1,3 +1,7 @@
+# Kahoot's PixiJS DevTools
+
+This is a fork from the official [PixiJS DevTools project](https://github.com/pixijs/devtools).
+
 # PixiJS DevTools
 
 <div align="center">
